@@ -1,4 +1,4 @@
-# geektrust.train
+# train by geektrust
 
 Train A and Train B are two limited stop super fast trains that travel from Chennai to New Delhi and Trivandrum to Guwahati.
 
