@@ -1,8 +1,8 @@
 import heapq
+import os
 from station import Station
 from train import Train
 from route import Route_for_A, Route_for_B
-
 
 class Services:
     @staticmethod
@@ -15,28 +15,34 @@ class Services:
         return train_name, bogies
 
     @staticmethod
+    def process_file(lines):
+        trains = list()
+        train_id = 1
+        for line in lines:
+            train_name, bogies = Services.get_train_and_bogies(line)
+            if train_id == 1:
+                source, destination = 'CHN', 'NDL'
+            elif train_id == 2:
+                source, destination = 'TVC', 'GHY'
+
+            train = Train(train_id, train_name, bogies, source, destination)
+            trains.append(train)
+            train_id += 1
+        return trains
+
+    @staticmethod
     def read_file(input_file):
         trains = list()
         # parse the file data
-        train_id = 1
         with open(input_file) as fp:
             lines = fp.readlines()
-            for line in lines:
-                train_name, bogies = Services.get_train_and_bogies(line)
-                if train_id == 1:
-                    source, destination = 'CHN', 'NDL'
-                elif train_id == 2:
-                    source, destination = 'TVC', 'GHY'
-
-                train = Train(train_id, train_name, bogies, source, destination)
-                trains.append(train)
-                train_id += 1
+            trains = Services.process_file(lines)
         return trains
     @staticmethod
     def print_path_till_hyb(trains):
         new_stations = list()
         for train in trains:
-            at_hyb = get_bogie_at('PPP', train)
+            at_hyb = Services.get_bogie_at('HYB', train)
             if at_hyb == 'E01':
                 return 'Invalid Station'
             print('ARRIVAL', train.name, *at_hyb, sep=' ')
@@ -56,6 +62,8 @@ class Services:
         heapq.heapify(temp)
 
         for elem in train1:
+            if elem == 'HYB':
+                continue
             if elem=='ENGINE':
                 heapq.heappush(temp, [-10**6, elem])
             if elem in route1:
@@ -64,6 +72,8 @@ class Services:
                 heapq.heappush(temp, [-1*abs(dist2-route2[elem].dist_frm_source), elem])
 
         for elem in train2:
+            if elem == 'HYB':
+                continue
             if elem=='ENGINE':
                 heapq.heappush(temp, [-10**6, elem])
             if elem in route2:
@@ -93,7 +103,7 @@ class Services:
 
         values = list()
         for i in range(len(train.bogies)):
-            if train.bogies[i] in route_list and route_list[train.bogies[i]].dist_frm_source <= dist:
+            if train.bogies[i] in route_list and route_list[train.bogies[i]].dist_frm_source <dist:
                 continue
             else:
                 values.append(train.bogies[i])
@@ -102,10 +112,13 @@ class Services:
 
     @staticmethod
     def check_valid_file(input_file):
-        file_size = os.path.getsize(input_file)
-        if file_size == 0:
+        if os.path.exists(input_file):
+            file_size = os.path.getsize(input_file)
+            if file_size == 0:
+                return False
+            return True
+        else:
             return False
-        return True
 
 
 

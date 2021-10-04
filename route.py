@@ -13,6 +13,11 @@ class Route:
     def get_route():
         print("No route found!")
 
+    @staticmethod
+    def register_routes():
+        Route_for_A.create_route()
+        Route_for_B.create_route()
+
 
 class Route_for_A(Route):
     route_A = {}
@@ -28,7 +33,7 @@ class Route_for_A(Route):
         stations.append([1600, 'NAGPUR', 'NGP', source])
         stations.append([1900, 'ITARSI', 'ITJ', source])
         stations.append([2000, 'BHOPAL', 'BPL', source])
-        stations.append([2500, 'AGRA', 'AGR', source])
+        stations.append([2500, 'AGRA', 'AGA', source])
         stations.append([2700, 'NEW DELHI', 'NDL', source])
         Route_for_A.route_A = Route.create_stations(stations)
 
